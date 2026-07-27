@@ -1,6 +1,8 @@
 import { useRef, useState } from "react";
 import { BsCloudArrowUp, BsFileEarmarkPdf } from "react-icons/bs";
 
+import { uploadManual } from "../../api/api";
+
 import "./UploadManual.css";
 
 /**
@@ -21,7 +23,7 @@ function UploadManual({ onUploadComplete }) {
     const [loading, setLoading] = useState(false);
 
     /**
-     * Envía el archivo PDF seleccionado al backend mediante una petición POST con FormData.
+     * Envía el archivo PDF seleccionado al backend mediante la capa de servicios centralizada.
      * Gestiona el flujo completo: subida, generación de embeddings y actualización de estados.
      */
     const handleUpload = async () => {
@@ -31,39 +33,25 @@ function UploadManual({ onUploadComplete }) {
             return;
         }
 
-        // Construir el objeto FormData para empaquetar el archivo binario
-        const formData = new FormData();
-        formData.append("file", file);
-
         try {
             setLoading(true);
             setResult(null);
             setStatus("Subiendo manual...");
 
-            // Realizar la petición HTTP POST al endpoint de subida del servidor FastAPI
-            const response = await fetch(
-                "http://localhost:8000/upload",
-                {
-                    method: "POST",
-                    body: formData
-                }
-            );
-
-            // Comprobar si la respuesta HTTP indica algún fallo en el servidor
-            if (!response.ok) {
-                throw new Error();
-            }
+            // Llamada al backend utilizando la función centralizada de la API
+            const data = await uploadManual(file);
 
             setStatus("Generando embeddings...");
 
-            const data = await response.json();
             setResult(data);
+
             setStatus("Manual preparado para consultas");
 
             // Invocar la función callback externa si está definida para refrescar otros componentes
             if (onUploadComplete) {
                 onUploadComplete();
             }
+
         } catch (error) {
             console.error(error);
             setStatus("Error procesando manual");
@@ -87,6 +75,7 @@ function UploadManual({ onUploadComplete }) {
                 <p>
                     Haz clic para elegir un archivo desde tu equipo.
                 </p>
+
                 {/* Input de tipo file oculto controlado mediante la referencia mutable */}
                 <input
                     ref={inputRef}
