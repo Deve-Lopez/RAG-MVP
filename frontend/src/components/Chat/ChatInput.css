@@ -1,0 +1,82 @@
+/* Contenedor principal de la caja de entrada del chat */
+.chat-input-box {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* Área de texto para introducir las consultas */
+.chat-input-box textarea {
+    width: 100%;
+    min-height: 130px;
+    resize: vertical;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 18px;
+    font-size: 15px;
+    line-height: 1.7;
+    transition: .25s;
+    background: white;
+    color: var(--text);
+}
+
+/* Estado de foco en el área de texto */
+.chat-input-box textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, .10);
+}
+
+/* Estilo del texto de marcador de posición (placeholder) */
+.chat-input-box textarea::placeholder {
+    color: #94A3B8;
+}
+
+/* Alineación del botón dentro de la caja de entrada */
+.chat-input-box button {
+    align-self: flex-end;
+}
+
+/* ================= BOTÓN ================= */
+
+/* Estilos generales para los botones modernos con gradiente */
+.btn-modern {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 28px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(
+        135deg,
+        #2563EB,
+        #4F46E5
+    );
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .25s;
+}
+
+/* Efecto hover interactivo para el botón moderno */
+.btn-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(37, 99, 235, .25);
+}
+
+/* Estado deshabilitado del botón moderno */
+.btn-modern:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ================= RESPONSIVE ================= */
+
+/* Adaptación para pantallas pequeñas y dispositivos móviles */
+@media(max-width: 768px) {
+    .chat-input-box button {
+        width: 100%;
+    }
+}

@@ -1,0 +1,98 @@
+/* ================= CHAT ================= */
+
+.chat-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* ================= HEADER ================= */
+
+.chat-header h2 {
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
+}
+
+.chat-header p {
+    color: var(--text-light);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* ================= INPUT ================= */
+
+.chat-input-box {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.chat-input-box textarea {
+    width: 100%;
+    min-height: 130px;
+    resize: vertical;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 18px;
+    font-size: 15px;
+    line-height: 1.7;
+    transition: .25s;
+    color: var(--text);
+    background: white;
+}
+
+.chat-input-box textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, .10);
+}
+
+.chat-input-box textarea::placeholder {
+    color: #94A3B8;
+}
+
+.chat-input-box button {
+    align-self: flex-end;
+}
+
+/* ================= BOTÓN ================= */
+
+.btn-modern {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #2563EB, #4F46E5);
+    color: white;
+    font-weight: 600;
+    padding: 14px 28px;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.btn-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(37, 99, 235, .25);
+}
+
+.btn-modern:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 768px) {
+    .chat-header h2 {
+        font-size: 24px;
+    }
+
+    .chat-input-box button {
+        width: 100%;
+        justify-content: center;
+    }
+}

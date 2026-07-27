@@ -1,0 +1,167 @@
+/* Contenedor general del listado de manuales */
+.manual-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* Tarjeta individual que representa un manual indexado */
+.manual-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+    transition: .25s;
+}
+
+/* Efecto hover de elevación para las tarjetas de manual */
+.manual-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, .08);
+}
+
+/* Cabecera de la tarjeta con icono y título */
+.manual-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+/* Icono representativo del archivo PDF del manual */
+.manual-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 16px;
+    background: #EEF4FF;
+    color: var(--primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+/* Contenedor del título y estado del manual */
+.manual-title {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Título del manual con truncamiento de texto si es muy largo */
+.manual-title h4 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Etiqueta de estado de éxito (procesado correctamente) */
+.badge-success {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: #ECFDF5;
+    color: #15803D;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Etiqueta de estado de advertencia o proceso pendiente */
+.badge-warning {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: #FFF7ED;
+    color: #C2410C;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Cuadrícula de información con estadísticas del manual */
+.manual-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 22px;
+}
+
+/* Bloque individual de estadística o métrica */
+.manual-stat {
+    background: #F8FAFC;
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+}
+
+/* Icono dentro de la estadística */
+.manual-stat svg {
+    font-size: 20px;
+    color: var(--primary);
+    margin-bottom: 8px;
+}
+
+/* Valor numérico de la estadística */
+.manual-stat-value {
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+/* Etiqueta descriptiva de la estadística */
+.manual-stat-label {
+    display: block;
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--text-light);
+}
+
+/* Estado vacío cuando no hay manuales cargados */
+.manual-empty {
+    padding: 50px 20px;
+    text-align: center;
+    color: var(--text-light);
+}
+
+/* Icono del estado vacío */
+.manual-empty svg {
+    font-size: 52px;
+    color: var(--primary);
+    margin-bottom: 18px;
+}
+
+/* ================= RESPONSIVE ================= */
+
+/* Adaptación para pantallas medianas (tablets) */
+@media (max-width: 768px) {
+    .manual-card {
+        padding: 18px;
+    }
+}
+
+/* Adaptación para pantallas pequeñas (móviles) */
+@media (max-width: 480px) {
+    .manual-header {
+        gap: 12px;
+    }
+    .manual-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 18px;
+    }
+    .manual-title h4 {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: unset;
+        word-break: break-word;
+    }
+    .manual-info {
+        grid-template-columns: 1fr;
+    }
+}

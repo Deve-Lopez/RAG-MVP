@@ -1,0 +1,216 @@
+/* ========= Google Font ========= */
+/* Importación de la fuente tipográfica Inter desde Google Fonts con diversos grosores */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Variables globales de diseño, colores y tipografía del sistema */
+:root {
+    --primary: #4F6EF7;
+    --primary-dark: #3E59E5;
+
+    --success: #22C55E;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+
+    --background: #F4F7FD;
+    --card: #FFFFFF;
+
+    --text: #1F2937;
+    --text-light: #6B7280;
+
+    --border: #E5E7EB;
+
+    --shadow: 0 10px 35px rgba(0, 0, 0, .06);
+
+    --radius: 22px;
+}
+
+/* Reset universal de márgenes, rellenos y modelo de caja */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilos base del cuerpo de la página con fuente Inter y fondo degradado */
+body {
+    font-family: "Inter", sans-serif;
+    background: linear-gradient(
+        180deg,
+        #F7F9FF 0%,
+        #EEF3FC 100%
+    );
+    color: var(--text);
+    min-height: 100vh;
+}
+
+/* Configuración de altura mínima para el contenedor raíz de React */
+#root {
+    min-height: 100vh;
+}
+
+/* Contenedor principal de la aplicación con ancho máximo y centrado */
+.app {
+    max-width: 1500px;
+    margin: auto;
+    padding: 32px;
+}
+
+/* ---------------- HEADER ---------------- */
+
+/* Estilos de la cabecera principal de la aplicación */
+.app-header {
+    background: white;
+    border-radius: 24px;
+    padding: 24px 30px;
+    box-shadow: var(--shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+/* Contenedor del logotipo y títulos descriptivos */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex: 1;
+    min-width: 0;
+}
+
+/* Icono principal del logotipo con gradiente y sombra estilizada */
+.logo-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 18px;
+    background: linear-gradient(
+        135deg,
+        var(--primary),
+        #6F88FF
+    );
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    box-shadow: 0 10px 20px rgba(79, 110, 247, .35);
+    flex-shrink: 0;
+}
+
+/* Título principal dentro de la cabecera */
+.logo h1 {
+    font-size: 30px;
+    margin-bottom: 4px;
+    white-space: normal;
+}
+
+/* Subtítulo descriptivo de la aplicación */
+.logo p {
+    color: var(--text-light);
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+/* Píldora de estado global en la cabecera */
+.status-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #F9FAFB;
+    padding: 12px 18px;
+    border-radius: 30px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+/* Indicador visual de punto con color de estado */
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+/* Estado online / activo (color verde) */
+.online {
+    background: var(--success);
+}
+
+/* Estado offline / inactivo (color rojo) */
+.offline {
+    background: var(--danger);
+}
+
+/* ---------------- CARD ---------------- */
+
+/* Tarjeta contenedora moderna con bordes redondeados y sombra */
+.card-modern {
+    background: white;
+    border-radius: 24px;
+    box-shadow: var(--shadow);
+    padding: 28px;
+    margin-bottom: 25px;
+}
+
+/* ---------------- BUTTON ---------------- */
+
+/* Estilos base para los botones modernos con gradiente y transición */
+.btn-modern {
+    background: linear-gradient(
+        135deg,
+        var(--primary),
+        var(--primary-dark)
+    );
+    color: white;
+    border: none;
+    border-radius: 16px;
+    padding: 14px 28px;
+    font-weight: 600;
+    transition: .25s;
+    cursor: pointer;
+}
+
+/* Efecto hover interactivo para el botón moderno */
+.btn-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(79, 110, 247, .35);
+}
+
+/* ---------------- INPUT ---------------- */
+
+/* Estilos personalizados para las áreas de texto globales */
+textarea {
+    border: 1px solid var(--border) !important;
+    border-radius: 18px !important;
+    padding: 18px !important;
+    resize: vertical;
+    font-size: 15px !important;
+    width: 100%;
+}
+
+/* Estado de foco para las áreas de texto */
+textarea:focus {
+    box-shadow: none !important;
+    border-color: var(--primary) !important;
+}
+
+/* ================= RESPONSIVE HEADER ================= */
+
+/* Adaptación responsive de la cabecera para pantallas móviles y tablets */
+@media (max-width: 768px) {
+    .app-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .logo-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 24px;
+    }
+
+    .status-pill {
+        width: 100%;
+        justify-content: center;
+    }
+}

@@ -1,0 +1,59 @@
+/* Contenedor principal para cada mensaje individual */
+.message {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+}
+
+/* Modificador para invertir el orden y alinear los mensajes del usuario a la derecha */
+.message.user {
+    flex-direction: row-reverse;
+}
+
+/* Estilos base para el avatar identificativo del emisor */
+.avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #DBEAFE;
+    color: #2563EB;
+    flex-shrink: 0;
+}
+
+/* Variación cromática para el avatar correspondiente al asistente */
+.avatar.ai {
+    background: #EEF2FF;
+    color: #4F46E5;
+}
+
+/* Burbuja de texto que contiene el contenido del mensaje */
+.bubble {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 18px;
+    line-height: 1.7;
+    max-width: 80%;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* Estilo personalizado para la burbuja cuando el emisor es el usuario */
+.message.user .bubble {
+    background: linear-gradient(135deg, #2563EB, #4F46E5);
+    color: white;
+    border: none;
+}
+
+/* Etiqueta que muestra el tiempo transcurrido de procesamiento de la respuesta */
+.elapsed {
+    margin-top: 14px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    color: #64748B;
+    font-size: 13px;
+}

@@ -18,10 +18,18 @@ import ingest
 
 
 class PDFHandler(FileSystemEventHandler):
+    """
+    Gestor de eventos del sistema de archivos para la librería watchdog.
+    Filtra las acciones y procesa únicamente los archivos con extensión PDF.
+    """
     def _maybe_index(self, path):
+        """
+        Comprueba si la ruta corresponde a un PDF, espera a que termine de escribirse
+        y dispara la indexación individual del archivo.
+        """
         if path.lower().endswith(".pdf"):
             print(f"\nCambio detectado: {path}")
-            # pequeña espera para asegurarnos de que el archivo terminó de copiarse
+            # Pequeña espera para asegurarnos de que el archivo terminó de copiarse
             time.sleep(1)
             try:
                 ingest.index_pdfs([path])
@@ -29,10 +37,12 @@ class PDFHandler(FileSystemEventHandler):
                 print(f"Error indexando {path}: {e}")
 
     def on_created(self, event):
+        """Se activa al detectarse la creación de un nuevo archivo en el directorio."""
         if not event.is_directory:
             self._maybe_index(event.src_path)
 
     def on_modified(self, event):
+        """Se activa cuando un archivo existente sufre modificaciones."""
         if not event.is_directory:
             self._maybe_index(event.src_path)
 

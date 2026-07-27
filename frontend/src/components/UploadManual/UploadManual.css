@@ -1,0 +1,155 @@
+/* Zona de arrastrar y soltar (Drag & Drop) para la subida de manuales en PDF */
+.upload-zone {
+    border: 2px dashed #CBD5E1;
+    border-radius: 20px;
+    background: #FAFBFD;
+    min-height: 210px;
+    padding: 35px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    transition: .25s;
+}
+
+/* Efecto hover interactivo para la zona de subida */
+.upload-zone:hover {
+    border-color: var(--primary);
+    background: #F5F8FF;
+    transform: translateY(-2px);
+}
+
+/* Icono principal de la zona de subida de archivos */
+.upload-icon {
+    font-size: 56px;
+    color: var(--primary);
+    margin-bottom: 18px;
+}
+
+/* Título principal dentro de la zona de subida */
+.upload-zone h4 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+/* Texto descriptivo secundario dentro de la zona de subida */
+.upload-zone p {
+    color: var(--text-light);
+    margin: 0;
+    font-size: 15px;
+}
+
+/* Contenedor que muestra la información del archivo PDF seleccionado */
+.selected-file {
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #F8FAFC;
+    border-radius: 16px;
+    padding: 14px 16px;
+    overflow: hidden;
+}
+
+/* Icono de archivo PDF (color rojo) en la barra de selección */
+.selected-file svg {
+    color: #DC2626;
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+/* Nombre del archivo con truncamiento de texto si es demasiado largo */
+.selected-file span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 15px;
+}
+
+/* Botón de acción para iniciar el proceso de subida */
+.upload-button {
+    width: 100%;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+/* Estado deshabilitado del botón de subida */
+.upload-button:disabled {
+    opacity: .7;
+    cursor: not-allowed;
+}
+
+/* Insignia o píldora para mostrar el estado actual de la subida o indexación */
+.upload-status {
+    margin-top: 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #EEF4FF;
+    color: #3559E0;
+    padding: 10px 14px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Contenedor de alerta visual cuando la subida se completa con éxito */
+.upload-success {
+    margin-top: 20px;
+    padding: 18px;
+    border-radius: 18px;
+    background: #ECFDF5;
+    border: 1px solid #BBF7D0;
+}
+
+/* Título destacado dentro del contenedor de éxito */
+.upload-success strong {
+    display: block;
+    margin-bottom: 8px;
+    color: #15803D;
+}
+
+/* ================= RESPONSIVE ================= */
+
+/* Adaptación para pantallas medianas (tablets) */
+@media (max-width: 768px) {
+    .upload-zone {
+        min-height: 170px;
+        padding: 26px 18px;
+    }
+
+    .upload-icon {
+        font-size: 46px;
+    }
+
+    .upload-zone h4 {
+        font-size: 18px;
+    }
+
+    .selected-file {
+        padding: 12px;
+    }
+}
+
+/* Adaptación para pantallas pequeñas (móviles) */
+@media (max-width: 480px) {
+    .upload-zone {
+        min-height: 150px;
+    }
+
+    .upload-zone h4 {
+        font-size: 17px;
+    }
+
+    .upload-zone p {
+        font-size: 14px;
+    }
+
+    .upload-status {
+        width: 100%;
+        justify-content: center;
+    }
+}

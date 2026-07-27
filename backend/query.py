@@ -1,17 +1,19 @@
 """
-query.py — Motor de búsqueda híbrida.
+query.py — Motor de búsqueda híbrida y generación de respuestas (RAG).
+Este script implementa el flujo completo de consulta: carga perezosa (lazy) de modelos,
+búsqueda combinada por palabras clave (BM25) y vectores semánticos (FAISS),
+fusión de ránkings, reranking avanzado, deduplicación, expansión contextual por vecinos
+y la construcción del prompt estructurado con reglas estrictas enviado a Ollama.
 
 Uso interactivo:
     python query.py "¿qué hago si salta el DTC P0126?"
 
-Uso como módulo (batch / benchmark):
-    from query import answer
-    respuesta = answer("¿qué hago si salta el DTC P0126?")
 """
+
 import sys
 import os
 import pickle
-from difflib import SequenceMatcher  # ← AÑADIR ESTA LÍNEA
+from difflib import SequenceMatcher
 
 import faiss
 import numpy as np
@@ -21,7 +23,8 @@ from sentence_transformers import SentenceTransformer, CrossEncoder
 import config
 
 
-# ── Singletons: se cargan una sola vez, la primera vez que se llama answer() ──
+# Variables globales para los Singletons: se cargan una única vez en memoria
+# la primera vez que se realiza una consulta para optimizar los tiempos de respuesta.
 _embed_model = None
 _reranker_model = None
 _metadata = None
@@ -30,17 +33,19 @@ _index = None
 
 
 def _load_models():
-    """Carga todos los modelos e índices una sola vez (lazy initialization)."""
+    """
+    Carga de forma perezosa (lazy initialization) los índices locales y los modelos de IA.
+    Verifica que existan los archivos cacheados en disco antes de cargarlos en RAM.
+    """
     global _embed_model, _reranker_model, _metadata, _bm25, _index
 
     if _metadata is None:
-
         if (
             not os.path.exists(config.METADATA_PATH)
             or not os.path.exists(config.BM25_PATH)
             or not os.path.exists(config.FAISS_INDEX_PATH)
         ):
-            raise FileNotFoundError("No hay ningún índice creado.")
+            raise FileNotFoundError("No hay ningún índice creado. Ejecuta primero ingest.py.")
 
         print("[query] Cargando índice y metadata...")
 
@@ -62,18 +67,25 @@ def _load_models():
 
     return _metadata, _bm25, _index, _embed_model, _reranker_model
 
+
 def hybrid_search(query, embed_model, metadata, bm25, index):
-    # --- Léxico ---
+    """
+    Realiza una búsqueda híbrida combinando dos mundos:
+    1. Búsqueda léxica (BM25): excelente para encontrar códigos de error o términos exactos.
+    2. Búsqueda vectorial (FAISS): excelente para encontrar conceptos por similitud de significado.
+    Ambos resultados se fusionan utilizando el algoritmo RRF (Reciprocal Rank Fusion).
+    """
+    # --- Búsqueda Léxica (BM25) ---
     tokenized_query = query.lower().split()
     bm25_scores = bm25.get_scores(tokenized_query) if bm25 else np.zeros(len(metadata))
     bm25_ranked = np.argsort(bm25_scores)[::-1][: config.TOP_K_BM25]
 
-    # --- Vectorial ---
+    # --- Búsqueda Vectorial (FAISS) ---
     q_vector = embed_model.encode([query], normalize_embeddings=True).astype("float32")
     _, vec_ranked = index.search(q_vector, config.TOP_K_VECTOR)
     vec_ranked = vec_ranked[0]
 
-    # --- Fusión RRF ---
+    # --- Fusión de ránkings mediante Reciprocal Rank Fusion (RRF) ---
     scores = {}
     for rank, idx in enumerate(bm25_ranked):
         scores[idx] = scores.get(idx, 0) + 1.0 / (config.RRF_K + rank + 1)
@@ -83,12 +95,17 @@ def hybrid_search(query, embed_model, metadata, bm25, index):
             continue
         scores[idx] = scores.get(idx, 0) + 1.0 / (config.RRF_K + rank + 1)
 
+    # Ordenar los candidatos fusionados de mayor a menor puntuación y recortar al cupo de fusión
     fused = sorted(scores.items(), key=lambda x: x[1], reverse=True)[: config.TOP_K_FUSION]
 
     return [metadata[idx] for idx, _ in fused]
 
 
 def rerank(query, candidates, reranker_model):
+    """
+    Reordena los candidatos obtenidos en la búsqueda híbrida usando un modelo Cross-Encoder.
+    Cruza directamente la pregunta con el texto de cada fragmento para evaluar su relevancia real.
+    """
     if not candidates:
         print("[reranker] hybrid_search no devolvió ningún candidato.")
         return []
@@ -104,14 +121,16 @@ def rerank(query, candidates, reranker_model):
 
     return ranked[: config.TOP_K_RERANK]
 
+
 def _similarity(a, b):
+    """Calcula el porcentaje de similitud textual entre dos fragmentos mediante SequenceMatcher."""
     return SequenceMatcher(None, a.lower(), b.lower()).ratio()
 
 
 def deduplicate_chunks(chunks_with_scores, threshold=config.DEDUP_THRESHOLD):
     """
-    Recibe lista de (chunk, score) ordenada por relevancia.
-    Descarta chunks que sean >threshold similares a uno ya aceptado.
+    Filtra la lista ordenada de fragmentos para eliminar aquellos que sean
+    demasiado parecidos entre sí, evitando redundancias innecesarias de contexto.
     """
     unique = []
     for chunk, score in chunks_with_scores:
@@ -124,9 +143,9 @@ def deduplicate_chunks(chunks_with_scores, threshold=config.DEDUP_THRESHOLD):
 
 def expand_neighbors(chunks, metadata):
     """
-    Expande vecinos PERO preserva el orden de relevancia del reranker.
-    Los chunks originales se presentan primero.
-    Los vecinos se añaden al final, ordenados por posición en el documento.
+    Amplía el contexto añadiendo los fragmentos vecinos (anterior y posterior en el PDF)
+    de los mejores resultados, asegurando que no se corta una explicación técnica a mitad.
+    Conserva los fragmentos principales al inicio y añade los vecinos ordenados al final.
     """
     seen = set()
     primary = []
@@ -156,7 +175,13 @@ def expand_neighbors(chunks, metadata):
     neighbors.sort(key=lambda x: x["id"])
     return primary + neighbors
 
+
 def build_prompt(query, chunks, max_chars=15000):
+    """
+    Construye un prompt altamente estructurado que incluye directrices estrictas
+    para el modelo de lenguaje (anti-alucinaciones, obligación de citar, manejo de datos críticos)
+    junto con los fragmentos de manuales recuperados.
+    """
     if not chunks:
         return None
 
@@ -213,7 +238,13 @@ def build_prompt(query, chunks, max_chars=15000):
         f"PREGUNTA: {query}\n\n"
         "Responde en español, de forma clara y concisa, incluyendo la cita correspondiente."
     )
+
+
 def ask_qwen(prompt):
+    """
+    Envía el prompt estructurado al servidor local de Ollama mediante solicitudes HTTP
+    y gestiona posibles errores de conexión o fallos en el servicio.
+    """
     payload = {
         "model": config.OLLAMA_MODEL,
         "messages": [{"role": "user", "content": prompt}],
@@ -238,8 +269,8 @@ def ask_qwen(prompt):
 
 def answer(query):
     """
-    Función principal. Puede llamarse desde CLI o importarse como módulo.
-    Los modelos se cargan lazy (solo la primera vez).
+    Función principal de consulta. Coordina todo el pipeline de búsqueda híbrida,
+    reranking, limpieza, expansión de contexto y llamada final al modelo de lenguaje.
     """
     metadata, bm25, index, embed_model, reranker_model = _load_models()
 
@@ -262,7 +293,8 @@ def answer(query):
 
     return ask_qwen(prompt)
 
-# ── CLI: solo si se ejecuta directamente ──
+
+# Bloque de ejecución por línea de comandos (CLI)
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Uso: python query.py \"tu pregunta\"")

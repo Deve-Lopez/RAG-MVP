@@ -1,0 +1,119 @@
+/* Contenedor principal para agrupar los diferentes elementos de estado */
+.status-container {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* Tarjeta individual que representa el estado de un servicio o componente */
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: #FAFBFD;
+    transition: .25s;
+}
+
+/* Efecto hover interactivo para elevar la tarjeta de estado y destacar su fondo */
+.status-item:hover {
+    background: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, .05);
+}
+
+/* Contenedor cuadrado para el icono representativo del estado */
+.status-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+/* Variante visual para indicar un estado de éxito o correcto funcionamiento */
+.success {
+    background: #ECFDF5;
+    color: #16A34A;
+}
+
+/* Variante visual para indicar un estado de advertencia o precaución */
+.warning {
+    background: #FFF7ED;
+    color: #EA580C;
+}
+
+/* Etiqueta de texto descriptiva superior dentro del elemento de estado */
+.status-label {
+    display: block;
+    font-size: 13px;
+    color: var(--text-light);
+    margin-bottom: 4px;
+}
+
+/* Texto destacado (valor principal) dentro del elemento de estado */
+.status-item strong {
+    display: block;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+/* Estilo para el texto que indica que la información se está cargando */
+.status-loading {
+    color: var(--text-light);
+    text-align: center;
+    padding: 18px 0;
+}
+
+/* Contenedor de alerta para mostrar mensajes de error en la verificación de estado */
+.status-error {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #DC2626;
+    font-weight: 600;
+    padding: 14px;
+    border-radius: 16px;
+    background: #FEF2F2;
+}
+
+/* ================= TABLET ================= */
+
+/* Adaptación de espaciados e iconos para pantallas medianas */
+@media (max-width: 768px) {
+    .status-item {
+        padding: 12px;
+        gap: 14px;
+    }
+
+    .status-icon {
+        width: 46px;
+        height: 46px;
+        font-size: 18px;
+    }
+}
+
+/* ================= MÓVIL ================= */
+
+/* Adaptación de alineaciones y tamaños de fuente para pantallas móviles pequeñas */
+@media (max-width: 480px) {
+    .status-item {
+        align-items: flex-start;
+    }
+
+    .status-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 17px;
+    }
+
+    .status-item strong {
+        font-size: 15px;
+    }
+}
