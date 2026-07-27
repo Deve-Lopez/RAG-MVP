@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Entornos
+.env
+
+# Node
+node_modules/
+dist/
+
+# RAG indexes
+faiss/
+indexes/
+chroma/
+*.pkl
+*.bin
+
+# PDFs de prueba
+manuals/*.pdf
+
+# Logs
+*.log
