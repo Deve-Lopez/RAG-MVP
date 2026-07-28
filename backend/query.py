@@ -229,6 +229,7 @@ def build_prompt(query, chunks, max_chars=15000):
         "11. Si hay varios valores y no puedes determinar cuál corresponde a la pregunta, responde exactamente: "
         "'Los fragmentos contienen varios valores y no es posible determinar con certeza cuál corresponde a esta pregunta.'\n\n"
         "12. La respuesta final debe tener un máximo de 120 palabras, salvo que la pregunta solicite un procedimiento paso a paso claramente presente en los fragmentos."
+        "13. Si el fragmento solo enumera nombres o categorías de producto sin texto descriptivo que responda la pregunta, responde exactamente:'No se encontró información específica sobre esto en los manuales consultados.'NO uses conocimiento general para rellenar la diferencia."
 
         "PROCESO INTERNO OBLIGATORIO:\n"
         "A. Identifica el fragmento que responde directamente.\n"
