@@ -76,10 +76,12 @@ def hybrid_search(query, embed_model, metadata, bm25, index):
     Ambos resultados se fusionan utilizando el algoritmo RRF (Reciprocal Rank Fusion).
     """
     # --- Búsqueda Léxica (BM25) ---
-    tokenized_query = query.lower().split()
+    tokenized_query = config.tokenize(query)
     bm25_scores = bm25.get_scores(tokenized_query) if bm25 else np.zeros(len(metadata))
-    bm25_ranked = np.argsort(bm25_scores)[::-1][: config.TOP_K_BM25]
-
+    if bm25_scores.max() <= 0:
+        bm25_ranked = []
+    else:
+        bm25_ranked = np.argsort(bm25_scores)[::-1][: config.TOP_K_BM25]
     # --- Búsqueda Vectorial (FAISS) ---
     q_vector = embed_model.encode([query], normalize_embeddings=True).astype("float32")
     _, vec_ranked = index.search(q_vector, config.TOP_K_VECTOR)

@@ -4,6 +4,7 @@ Define las rutas del proyecto, los modelos de inteligencia artificial y
 los parámetros que controlan la búsqueda y fragmentación de los manuales.
 """
 import os
+import re
 
 # Directorios base del proyecto calculados de forma dinámica.
 # Usamos rutas relativas para evitar que falle al mover o clonar el repositorio.
@@ -53,3 +54,8 @@ TOP_K_RERANK = 10   # cuántos pasa el reranker (antes de deduplicar)
 # Umbral de similitud para eliminar fragmentos duplicados o casi idénticos antes de pasárselos
 # al modelo de lenguaje, ahorrando espacio de contexto y evitando redundancias.
 DEDUP_THRESHOLD = 0.75   # 0.0 = nada se descarta, 1.0 = idénticos se descartan
+
+# Tokenizador compartido para BM25. Debe ser idéntico en ingest.py y query.py:
+# si difieren, el índice y las consultas dejan de ser comparables entre sí.
+def tokenize(text):
+    return re.findall(r"[a-záéíóúñ0-9]+(?:[-_/][a-záéíóúñ0-9]+)*", text.lower())

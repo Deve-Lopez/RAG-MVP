@@ -159,10 +159,7 @@ def _save_state(manifest, metadata, index):
 
     # Tokenización optimizada para términos técnicos y palabras compuestas
     from rank_bm25 import BM25Okapi
-    tokenized = [
-        re.findall(r"[a-zA-Z0-9]+(?:[-_/][a-zA-Z0-9]+)*", m["text"].lower())
-        for m in metadata
-    ]
+    tokenized = [config.tokenize(m["text"]) for m in metadata]
     bm25 = BM25Okapi(tokenized) if tokenized else None
     with open(config.BM25_PATH, "wb") as f:
         pickle.dump(bm25, f)
